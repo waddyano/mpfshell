@@ -73,10 +73,10 @@ class MpFileShell(cmd.Cmd):
 
         if self.color:
             self.intro = '\n' + colorama.Fore.GREEN + \
-                         '** Micropython File Shell v%s, sw@kaltpost.de ** ' % version.FULL + \
+                         '** (BJS) Micropython File Shell v%s, sw@kaltpost.de ** ' % version.FULL + \
                          colorama.Fore.RESET + '\n'
         else:
-            self.intro = '\n** Micropython File Shell v%s, sw@kaltpost.de **\n' % version.FULL
+            self.intro = '\n** (BJS) Micropython File Shell v%s, sw@kaltpost.de **\n' % version.FULL
 
         self.intro += '-- Running on Python %d.%d using PySerial %s --\n' \
                        % (sys.version_info[0], sys.version_info[1], serial.VERSION)
@@ -571,10 +571,11 @@ class MpFileShell(cmd.Cmd):
 
                 if platform.system() == "Windows":
                     self.repl.exit_character = chr(0x11)
+                    self.repl.raw = False
                 else:
                     self.repl.exit_character = chr(0x1d)
-
-                self.repl.raw = True
+                    self.repl.raw = True
+                    
                 self.repl.set_rx_encoding('UTF-8')
                 self.repl.set_tx_encoding('UTF-8')
 

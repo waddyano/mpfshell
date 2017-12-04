@@ -22,9 +22,30 @@
 # THE SOFTWARE.
 ##
 
-
 import serial
 
+class ConsoleOut(object):
+    """file-like wrapper that uses os.write"""
+
+    def __init__(self, w):
+        self.writer = w
+        self.buffered = ''
+
+    def flush(self):
+        pass
+
+    def write(self, s):
+        #print("my out ", str(s))
+        s = self.buffered + s
+        self.buffered = ''
+        if len(s) == 1 and ord(s[0]) == 27:
+            self.buffered = s
+            return
+        elif len(s) == 2 and ord(s[0]) == 27 and s[1] == '[':
+            self.buffered = s
+            return
+        self.writer.write(s)
+        
 if serial.VERSION.startswith("2."):
 
     # see if we could use the legacy Miniterm implementation
@@ -67,4 +88,12 @@ else:
 
     # see if we could use the new Miniterm implementation
     from serial.tools.miniterm import Miniterm
-    Term = Miniterm
+    class Term(Miniterm):
+        def __init__(self, serial_instance):
+            import sys
+            #Miniterm.__init__(self, serial_instance, filters=['debug'])
+            orig_output = sys.stdout
+            print("orig_output", orig_output)
+            Miniterm.__init__(self, serial_instance)
+            self.console.output = ConsoleOut(orig_output)
+			

@@ -70,6 +70,7 @@ class Pyboard:
 
         if self.con.survives_soft_reset():
 
+            print("enter raw repl! case 1")
             self.con.write(b'\r\x01')  # ctrl-A: enter raw REPL
             data = self.read_until(1, b'raw REPL; CTRL-B to exit\r\n>')
 
@@ -92,9 +93,11 @@ class Pyboard:
 
         else:
 
+            print("enter raw repl! case 2")
             self.con.write(b'\r\x01')  # ctrl-A: enter raw REPL
             data = self.read_until(1, b'raw REPL; CTRL-B to exit\r\n')
 
+            print(data)
             if not data.endswith(b'raw REPL; CTRL-B to exit\r\n'):
                 print(data)
                 raise PyboardError('could not enter raw repl')
